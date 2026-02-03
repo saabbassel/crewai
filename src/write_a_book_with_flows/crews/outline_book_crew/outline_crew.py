@@ -1,7 +1,7 @@
 from crewai import Agent, Crew, Process, Task, LLM
 from crewai.project import CrewBase, agent, crew, task
 
-from write_a_book_with_flows.types import BookOutline
+from write_a_book_with_flows.types import LearningMaterialOutline
 
 
 @CrewBase
@@ -37,7 +37,7 @@ class OutlineCrew:
     @task
     def generate_outline(self) -> Task:
         return Task(
-            config=self.tasks_config["generate_outline"], output_pydantic=BookOutline
+            config=self.tasks_config["generate_outline"], output_pydantic=LearningMaterialOutline
         )
 
     @crew

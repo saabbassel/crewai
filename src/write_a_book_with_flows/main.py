@@ -8,51 +8,51 @@ from pydantic import BaseModel
 from write_a_book_with_flows.crews.write_book_chapter_crew.write_book_chapter_crew import (
     WriteBookChapterCrew,
 )
-from write_a_book_with_flows.types import Chapter, ChapterOutline
+from write_a_book_with_flows.types import Section, SectionOutline
 
 from write_a_book_with_flows.crews.outline_book_crew.outline_crew import OutlineCrew
 
 
-class BookState(BaseModel):
+class LearningMaterialState(BaseModel):
     id: str = "1"
     title: str = "Learn AZ-900 Microsoft Azure fundamentals" # "The Current State of AI in July 2025"
-    book: List[Chapter] = []
-    book_outline: List[ChapterOutline] = []
+    learning_material: List[Section] = []
+    learning_material_outline: List[SectionOutline] = []
     topic: str = (
         "Exploring the latest trends in AI across different industries as of July 2025"
     )
     goal: str = """
-        The goal of this book is to provide a comprehensive overview of the current state of artificial intelligence in July 2025.
+        The goal of this learning material is to provide a comprehensive overview of the current state of artificial intelligence in July 2025.
         It will delve into the latest trends impacting various industries, analyze significant advancements,
-        and discuss potential future developments. The book aims to inform readers about cutting-edge AI technologies
+        and discuss potential future developments. The learning material aims to inform readers about cutting-edge AI technologies
         and prepare them for upcoming innovations in the field.
     """
 
 
-class BookFlow(Flow[BookState]):
-    initial_state = BookState
+class LearningMaterialFlow(Flow[LearningMaterialState]):
+    initial_state = LearningMaterialState
 
     @start()
-    def generate_book_outline(self):
-        print("Kickoff the Book Outline Crew")
+    def generate_learning_material_outline(self):
+        print("Kickoff the Learning Material Outline Crew")
         output = (
             OutlineCrew()
             .crew()
             .kickoff(inputs={"topic": self.state.topic, "goal": self.state.goal})
         )
 
-        chapters = output["chapters"]
-        print("Chapters:", chapters)
+        sections = output["sections"]
+        print("Sections:", sections)
 
-        self.state.book_outline = chapters
-        return chapters
+        self.state.learning_material_outline = sections
+        return sections
 
-    @listen(generate_book_outline)
-    async def write_chapters(self):
-        print("Writing Book Chapters")
+    @listen(generate_learning_material_outline)
+    async def write_sections(self):
+        print("Writing Learning Material Sections")
         tasks = []
 
-        async def write_single_chapter(chapter_outline):
+        async def write_single_section(section_outline):
             output = (
                 WriteBookChapterCrew()
                 .crew()
@@ -60,68 +60,68 @@ class BookFlow(Flow[BookState]):
                     inputs={
                         "goal": self.state.goal,
                         "topic": self.state.topic,
-                        "chapter_title": chapter_outline.title,
-                        "chapter_description": chapter_outline.description,
+                        "chapter_title": section_outline.title,
+                        "chapter_description": section_outline.description,
                         "book_outline": [
-                            chapter_outline.model_dump_json()
-                            for chapter_outline in self.state.book_outline
+                            section_outline.model_dump_json()
+                            for section_outline in self.state.learning_material_outline
                         ],
                     }
                 )
             )
             title = output["title"]
             content = output["content"]
-            chapter = Chapter(title=title, content=content)
-            return chapter
+            section = Section(title=title, content=content)
+            return section
 
-        for chapter_outline in self.state.book_outline:
-            print(f"Writing Chapter: {chapter_outline.title}")
-            print(f"Description: {chapter_outline.description}")
-            # Schedule each chapter writing task
-            task = asyncio.create_task(write_single_chapter(chapter_outline))
+        for section_outline in self.state.learning_material_outline:
+            print(f"Writing Section: {section_outline.title}")
+            print(f"Description: {section_outline.description}")
+            # Schedule each section writing task
+            task = asyncio.create_task(write_single_section(section_outline))
             tasks.append(task)
 
-        # Await all chapter writing tasks concurrently
-        chapters = await asyncio.gather(*tasks)
-        print("Newly generated chapters:", chapters)
-        self.state.book.extend(chapters)
+        # Await all section writing tasks concurrently
+        sections = await asyncio.gather(*tasks)
+        print("Newly generated sections:", sections)
+        self.state.learning_material.extend(sections)
 
-        print("Book Chapters", self.state.book)
+        print("Learning Material Sections", self.state.learning_material)
 
-    @listen(write_chapters)
-    async def join_and_save_chapter(self):
-        print("Joining and Saving Book Chapters")
-        # Combine all chapters into a single markdown string
-        book_content = ""
+    @listen(write_sections)
+    async def join_and_save_section(self):
+        print("Joining and Saving Learning Material Sections")
+        # Combine all sections into a single markdown string
+        learning_material_content = ""
 
-        for chapter in self.state.book:
-            # Add the chapter title as an H1 heading
-            book_content += f"# {chapter.title}\n\n"
-            # Add the chapter content
-            book_content += f"{chapter.content}\n\n"
+        for section in self.state.learning_material:
+            # Add the section title as an H1 heading
+            learning_material_content += f"# {section.title}\n\n"
+            # Add the section content
+            learning_material_content += f"{section.content}\n\n"
 
-        # The title of the book from self.state.title
-        book_title = self.state.title
+        # The title of the learning material from self.state.title
+        learning_material_title = self.state.title
 
         # Create the filename by replacing spaces with underscores and adding .md extension
-        filename = f"./{book_title.replace(' ', '_')}.md"
+        filename = f"./{learning_material_title.replace(' ', '_')}.md"
 
         # Save the combined content into the file
         with open(filename, "w", encoding="utf-8") as file:
-            file.write(book_content)
+            file.write(learning_material_content)
 
-        print(f"Book saved as {filename}")
-        return book_content
+        print(f"Learning Material saved as {filename}")
+        return learning_material_content
 
 
 def kickoff():
-    poem_flow = BookFlow()
-    poem_flow.kickoff()
+    learning_material_flow = LearningMaterialFlow()
+    learning_material_flow.kickoff()
 
 
 def plot():
-    poem_flow = BookFlow()
-    poem_flow.plot()
+    learning_material_flow = LearningMaterialFlow()
+    learning_material_flow.plot()
 
 
 if __name__ == "__main__":

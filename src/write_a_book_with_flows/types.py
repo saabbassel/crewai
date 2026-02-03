@@ -3,15 +3,15 @@ from typing import List
 from pydantic import BaseModel
 
 
-class ChapterOutline(BaseModel):
+class SectionOutline(BaseModel):
     title: str
     description: str
 
 
-class BookOutline(BaseModel):
-    chapters: List[ChapterOutline]
+class LearningMaterialOutline(BaseModel):
+    sections: List[SectionOutline]
 
 
-class Chapter(BaseModel):
+class Section(BaseModel):
     title: str
     content: str

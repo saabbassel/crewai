@@ -1,7 +1,7 @@
 from crewai import Agent, Crew, Process, Task, LLM
 from crewai.project import CrewBase, agent, crew, task
 
-from write_a_book_with_flows.types import Chapter
+from write_a_book_with_flows.types import Section
 
 
 @CrewBase
@@ -35,7 +35,7 @@ class WriteBookChapterCrew:
 
     @task
     def write_chapter(self) -> Task:
-        return Task(config=self.tasks_config["write_chapter"], output_pydantic=Chapter)
+        return Task(config=self.tasks_config["write_chapter"], output_pydantic=Section)
 
     @crew
     def crew(self) -> Crew:
