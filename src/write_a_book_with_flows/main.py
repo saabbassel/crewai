@@ -5,67 +5,82 @@ from typing import List
 from crewai.flow.flow import Flow, listen, start
 from pydantic import BaseModel
 
-from write_a_book_with_flows.crews.write_book_chapter_crew.write_book_chapter_crew import (
-    WriteBookChapterCrew,
-)
-from write_a_book_with_flows.types import Section, SectionOutline
-
-from write_a_book_with_flows.crews.outline_book_crew.outline_crew import OutlineCrew
+from write_a_book_with_flows.crew import OutlineCrew, ContentCrew
+from write_a_book_with_flows.types import OutlinePoint, Section
 
 
 class LearningMaterialState(BaseModel):
-    id: str = "1"
-    title: str = "Learn AZ-900 Microsoft Azure fundamentals" # "The Current State of AI in July 2025"
-    learning_material: List[Section] = []
-    learning_material_outline: List[SectionOutline] = []
-    topic: str = (
-        "Exploring the latest trends in AI across different industries as of July 2025"
-    )
-    goal: str = """
-        The goal of this learning material is to provide a comprehensive overview of the current state of artificial intelligence in July 2025.
-        It will delve into the latest trends impacting various industries, analyze significant advancements,
-        and discuss potential future developments. The learning material aims to inform readers about cutting-edge AI technologies
-        and prepare them for upcoming innovations in the field.
-    """
+    topic: str
+    level: str  # Beginner, Intermediate, Expert
+    urls: List[str] = []
+    outline: List[OutlinePoint] = []
+    sections: List[Section] = []
+    folder_path: str = ""
 
 
 class LearningMaterialFlow(Flow[LearningMaterialState]):
-    initial_state = LearningMaterialState
 
     @start()
-    def generate_learning_material_outline(self):
-        print("Kickoff the Learning Material Outline Crew")
+    def generate_outline(self):
+        print("Generating Course Outline")
         output = (
             OutlineCrew()
             .crew()
-            .kickoff(inputs={"topic": self.state.topic, "goal": self.state.goal})
+            .kickoff(inputs={"topic": self.state.topic, "level": self.state.level, "urls": self.state.urls})
         )
 
-        sections = output["sections"]
-        print("Sections:", sections)
+        outline = output["points"]
+        print("Outline Points:", outline)
 
-        self.state.learning_material_outline = sections
-        return sections
+        # Create folder
+        import os
+        safe_topic = self.state.topic.replace(' ', '_').replace('/', '_')
+        self.state.folder_path = f"./{safe_topic}"
+        os.makedirs(self.state.folder_path, exist_ok=True)
 
-    @listen(generate_learning_material_outline)
-    async def write_sections(self):
-        print("Writing Learning Material Sections")
+        # Save course_outline.md
+        outline_content = f"# {self.state.topic} - {self.state.level} Level\n\n"
+        for i, point in enumerate(outline, 1):
+            outline_content += f"{i}. **{point.title}**\n   {point.description}\n\n"
+
+        with open(f"{self.state.folder_path}/course_outline.md", "w") as f:
+            f.write(outline_content)
+
+        self.state.outline = outline
+
+        # HITL
+        print("Outline generated. Please review course_outline.md")
+        user_input = input("Enter 'approved' to proceed, 'rejected <feedback>' to restart, or 'exit' to quit: ")
+        if user_input.lower() == 'exit':
+            print("Exiting.")
+            return None
+        elif user_input.lower().startswith('rejected'):
+            feedback = user_input[8:].strip()
+            print(f"Restarting with feedback: {feedback}")
+            # Restart, perhaps by calling again, but for simplicity, raise or something
+            # Since flow, perhaps return and listen handles
+            self.state.outline = []
+            return "restart"
+        else:
+            print("Proceeding to content generation.")
+            return outline
+    @listen(generate_outline)
+    async def write_sections(self, outline):
+        if outline is None or outline == "restart":
+            return
+        print("Writing Sections")
         tasks = []
 
-        async def write_single_section(section_outline):
+        async def write_single_section(point):
             output = (
-                WriteBookChapterCrew()
+                ContentCrew()
                 .crew()
                 .kickoff(
                     inputs={
-                        "goal": self.state.goal,
                         "topic": self.state.topic,
-                        "chapter_title": section_outline.title,
-                        "chapter_description": section_outline.description,
-                        "book_outline": [
-                            section_outline.model_dump_json()
-                            for section_outline in self.state.learning_material_outline
-                        ],
+                        "level": self.state.level,
+                        "section_title": point.title,
+                        "section_description": point.description,
                     }
                 )
             )
@@ -74,55 +89,40 @@ class LearningMaterialFlow(Flow[LearningMaterialState]):
             section = Section(title=title, content=content)
             return section
 
-        for section_outline in self.state.learning_material_outline:
-            print(f"Writing Section: {section_outline.title}")
-            print(f"Description: {section_outline.description}")
-            # Schedule each section writing task
-            task = asyncio.create_task(write_single_section(section_outline))
+        for point in self.state.outline:
+            print(f"Writing Section: {point.title}")
+            task = asyncio.create_task(write_single_section(point))
             tasks.append(task)
 
-        # Await all section writing tasks concurrently
         sections = await asyncio.gather(*tasks)
         print("Newly generated sections:", sections)
-        self.state.learning_material.extend(sections)
+        self.state.sections.extend(sections)
 
-        print("Learning Material Sections", self.state.learning_material)
+        # Save each section
+        for i, section in enumerate(sections, 1):
+            filename = f"{self.state.folder_path}/{i:02d}_{section.title.replace(' ', '_').lower()}.md"
+            with open(filename, "w") as f:
+                f.write(f"# {section.title}\n\n{section.content}")
 
-    @listen(write_sections)
-    async def join_and_save_section(self):
-        print("Joining and Saving Learning Material Sections")
-        # Combine all sections into a single markdown string
-        learning_material_content = ""
-
-        for section in self.state.learning_material:
-            # Add the section title as an H1 heading
-            learning_material_content += f"# {section.title}\n\n"
-            # Add the section content
-            learning_material_content += f"{section.content}\n\n"
-
-        # The title of the learning material from self.state.title
-        learning_material_title = self.state.title
-
-        # Create the filename by replacing spaces with underscores and adding .md extension
-        filename = f"./{learning_material_title.replace(' ', '_')}.md"
-
-        # Save the combined content into the file
-        with open(filename, "w", encoding="utf-8") as file:
-            file.write(learning_material_content)
-
-        print(f"Learning Material saved as {filename}")
-        return learning_material_content
+        print("Sections saved.")
 
 
-def kickoff():
-    learning_material_flow = LearningMaterialFlow()
-    learning_material_flow.kickoff()
+def kickoff(topic: str, level: str, urls: List[str] = []):
+    state = LearningMaterialState(topic=topic, level=level, urls=urls)
+    flow = LearningMaterialFlow(state=state)
+    flow.kickoff()
 
 
 def plot():
-    learning_material_flow = LearningMaterialFlow()
-    learning_material_flow.plot()
+    flow = LearningMaterialFlow()
+    flow.plot()
 
 
 if __name__ == "__main__":
-    kickoff()
+    import argparse
+    parser = argparse.ArgumentParser(description="Generate learning materials")
+    parser.add_argument("topic", help="The topic for the learning material")
+    parser.add_argument("level", choices=["Beginner", "Intermediate", "Expert"], help="Difficulty level")
+    parser.add_argument("--urls", nargs="*", default=[], help="Optional source URLs")
+    args = parser.parse_args()
+    kickoff(args.topic, args.level, args.urls)

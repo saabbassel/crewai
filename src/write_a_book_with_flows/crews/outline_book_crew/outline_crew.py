@@ -6,7 +6,7 @@ from write_a_book_with_flows.types import LearningMaterialOutline
 
 @CrewBase
 class OutlineCrew:
-    """Book Outline Crew"""
+    """Learning Materials Outline Crew"""
 
     agents_config = "config/agents.yaml"
     tasks_config = "config/tasks.yaml"
@@ -42,7 +42,7 @@ class OutlineCrew:
 
     @crew
     def crew(self) -> Crew:
-        """Creates the Book Outline Crew"""
+        """Creates the Learning Materials Outline Crew"""
         return Crew(
             agents=self.agents,
             tasks=self.tasks,

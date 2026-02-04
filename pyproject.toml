@@ -1,7 +1,7 @@
 [project]
-name = "write_a_book_with_flows"
+name = "learning_materials_generator"
 version = "0.1.0"
-description = "write_a_book_with_flows using crewAI"
+description = "Generate structured learning materials using CrewAI"
 authors = [
     { name = "Your Name", email = "you@example.com" },
 ]
@@ -11,7 +11,7 @@ dependencies = [
 ]
 
 [project.scripts]
-kickoff = "write_a_book_with_flows.main:kickoff"
+generate = "write_a_book_with_flows.main:kickoff"
 plot = "write_a_book_with_flows.main:plot"
 
 [build-system]

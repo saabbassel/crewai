@@ -6,7 +6,7 @@ from write_a_book_with_flows.types import Section
 
 @CrewBase
 class WriteBookChapterCrew:
-    """Write Book Chapter Crew"""
+    """Write Learning Material Section Crew"""
 
     agents_config = "config/agents.yaml"
     tasks_config = "config/tasks.yaml"
@@ -39,7 +39,7 @@ class WriteBookChapterCrew:
 
     @crew
     def crew(self) -> Crew:
-        """Creates the Write Book Chapter Crew"""
+        """Creates the Write Learning Material Section Crew"""
         return Crew(
             agents=self.agents,
             tasks=self.tasks,

@@ -3,13 +3,13 @@ from typing import List
 from pydantic import BaseModel
 
 
-class SectionOutline(BaseModel):
+class OutlinePoint(BaseModel):
     title: str
     description: str
 
 
-class LearningMaterialOutline(BaseModel):
-    sections: List[SectionOutline]
+class CurriculumOutline(BaseModel):
+    points: List[OutlinePoint]
 
 
 class Section(BaseModel):
