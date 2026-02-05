@@ -2,6 +2,8 @@
 - install ollama
 brew install ollama
 
+ollama pull llama2:13b mistral:latest 
+
 # prompet
 enhance the following prompt to generate a crew python application
 The application should be able to generate learning materials to be used for courses
@@ -339,4 +341,5 @@ The application creates a folder named after the topic (filesystem-safe), genera
 python3 -m main.py "AZURE FUNDAMANTALS" Beginner --urls "https://learn.microsoft.com/en-us/credentials/certifications/azure-fundamentals/?practice-assessment-type=certification" "https://learn.microsoft.com/en-us/training/paths/prepare-teach-az-900-microsoft-academic-programs/" 
 
 /Users/b.saab/repos/.venv/bin/python -u -m src.educational_materials.main "AZURE FUNDAMENTALS" Beginner --urls "https://learn.microsoft.com/"
+
 

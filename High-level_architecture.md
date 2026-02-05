@@ -1,38 +1,8 @@
 
-# Gemini
-
-# Stages
+# Prompts
 - I want to develop agentic application using crewai to prepare educational materials for a topic. I want a suggestion for multi stage (multi app/ crew/ flow) to create the educational materials from scratch, starting from search for similar or popular courses about the topic, to prepare hand outs and hands-on for the students
 - I want to run the stages separately, to exchange the output between stages, I want to generate markdown files to be provided as input for the next stage
-
-# Stages's Models
-- I want to use Ollama and local models whatever is possible to save costs. what is the best model for each agent you suggested.
-
-Transitioning to local models using Ollama is the smartest way to iterate on your "Educational Material" application without racking up massive API bills. For a multi-agent system, you don't need the most powerful model for every role; you can match the model's specialty to the agent's task.
-
-Based on the current 2026 local LLM landscape, here are the best-in-class recommendations for your specific agents.
-
-1. Local Model Recommendation Matrix (2026)
-Agent Role	Recommended Local Model	Why this model?
-Market Researcher	Llama 4 Scout (17B)	Fast and excellent at tool-calling for web searches.
-Gap Analyst	Qwen3-Thinking (30B)	Uses "Thinking Mode" to synthesize complex market data.
-Curriculum Architect	GPT-OSS 20B	Highly structured output; great at following hierarchical logic.
-Technical Writer	Mistral Large 3	Superior prose quality and long-context coherence for handouts.
-Lab Instructor	DeepSeek V3.2 Speciale	Current SOTA for generating functional, bug-free code snippets.
-Code Reviewer	Qwen3-Coder-30B	Specialized in debugging and repository-scale understanding.
-Hardware Strategy
-
-Budget Setup (8GB-12GB VRAM): Use the 4-bit quantized versions of Llama 4 Scout or Qwen3-30B. These run efficiently on consumer GPUs.
-
-Pro Setup (24GB+ VRAM): You can run DeepSeek V3.2 or GPT-OSS 120B (quantized) for the most complex reasoning tasks (Architecture/Reviewing).
-
-2. Implementing Ollama in your CrewAI Code
-To use these local models, you need to point CrewAI to your local Ollama instance. Ensure you have run ollama pull <model_name> first.
-
-Example Configuration in main.py
-
-Python
-from crewai import Agent, LLM
+- I want to run the stages separately, to exchange the output between stages, I want to generate markdown files to be provided as input for the next stage
 
 # Define your local models via Ollama
 research_llm = LLM(
@@ -79,10 +49,8 @@ This video provides a practical, step-by-step walkthrough for linking local mode
 
 
 
-# Stages
-I want to run the stages separately, to exchange the output between stages, I want to generate markdown files to be provided as input for the next stage
-##################################
-# ChatGPT
+#  Chatgpt Stages
+
 # Overview floy
 - Prompt: I want to develop agentic application using crewai to prepare educational materials for a topic. I want a suggestion for multi stage (multi app/ crew/ flow) to create the educational materials from scratch, starting from search for similar or popular courses about the topic, to prepare hand outs and hands-on for the students
 
@@ -377,7 +345,7 @@ I can:
 
 Just tell me which direction you want to go 👀
 
-# Stage's models
+# Chatgpt Stage's models
 - I want to use Ollama and local models whatever is possible to save costs. what is the best model for each agent you suggested.
 
 Love that — **Ollama + local models** is a smart, cost-saving way to build your whole agentic pipeline. Here’s a practical breakdown of **which model type works best for each agent role I suggested**, with cost and capability in mind.
@@ -567,3 +535,34 @@ If you run into quality limits locally, you can reserve a tiny cloud model (e.g.
 ---
 
 If you want, I can go a level deeper and **write exact Ollama prompt templates** for each agent (with schemas, examples, and failure handling). Just tell me which stage you want to start with! 🚀
+
+# Gemini stages's models
+
+# Stages's Models
+- I want to use Ollama and local models whatever is possible to save costs. what is the best model for each agent you suggested.
+
+Transitioning to local models using Ollama is the smartest way to iterate on your "Educational Material" application without racking up massive API bills. For a multi-agent system, you don't need the most powerful model for every role; you can match the model's specialty to the agent's task.
+
+Based on the current 2026 local LLM landscape, here are the best-in-class recommendations for your specific agents.
+
+1. Local Model Recommendation Matrix (2026)
+Agent Role	Recommended Local Model	Why this model?
+Market Researcher	Llama 4 Scout (17B)	Fast and excellent at tool-calling for web searches.
+Gap Analyst	Qwen3-Thinking (30B)	Uses "Thinking Mode" to synthesize complex market data.
+Curriculum Architect	GPT-OSS 20B	Highly structured output; great at following hierarchical logic.
+Technical Writer	Mistral Large 3	Superior prose quality and long-context coherence for handouts.
+Lab Instructor	DeepSeek V3.2 Speciale	Current SOTA for generating functional, bug-free code snippets.
+Code Reviewer	Qwen3-Coder-30B	Specialized in debugging and repository-scale understanding.
+Hardware Strategy
+
+Budget Setup (8GB-12GB VRAM): Use the 4-bit quantized versions of Llama 4 Scout or Qwen3-30B. These run efficiently on consumer GPUs.
+
+Pro Setup (24GB+ VRAM): You can run DeepSeek V3.2 or GPT-OSS 120B (quantized) for the most complex reasoning tasks (Architecture/Reviewing).
+
+2. Implementing Ollama in your CrewAI Code
+To use these local models, you need to point CrewAI to your local Ollama instance. Ensure you have run ollama pull <model_name> first.
+
+Example Configuration in main.py
+
+Python
+from crewai import Agent, LLM
