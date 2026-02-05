@@ -1,0 +1,60 @@
+research_topic:
+  description: >
+    Conduct comprehensive research on the topic "{topic}" at {level} difficulty level.
+    
+    Use the provided URLs as reference sources: {urls}
+    
+    Your research should:
+    1. Identify key concepts, definitions, and foundational knowledge
+    2. Gather credible information appropriate for {level} learners
+    3. Extract facts, examples, and real-world applications
+    4. Note authoritative sources and references for citations
+    5. Organize findings by conceptual themes
+    
+    Ensure all information is technically accurate, current, and suitable for educational use.
+  expected_output: >
+    A comprehensive research summary containing:
+    - Key concepts and definitions for {topic}
+    - Important facts and findings at {level} level
+    - Real-world applications and examples
+    - List of credible sources and references with URLs
+    - Conceptual themes and knowledge areas
+  agent: researcher
+
+design_curriculum:
+  description: >
+    Based on the research findings about "{topic}", create a well-structured curriculum outline for {level} learners.
+    
+    Your curriculum should:
+    1. Contain 3-10 distinct, logical learning sections/points
+    2. Progress from foundational concepts to more advanced topics
+    3. Each section must have a clear title and 2-3 sentence description
+    4. Build progressively, where each section prepares for the next
+    5. Be appropriate for the {level} difficulty level
+    
+    Ensure proper pedagogical sequencing and cognitive scaffolding.
+    
+    IMPORTANT: Output MUST be valid JSON in this exact format:
+    {
+      "points": [
+        {
+          "title": "Section Title",
+          "description": "2-3 sentence description of what this section covers"
+        }
+      ]
+    }
+  expected_output: >
+    A JSON object with a "points" array containing 3-10 sections, where each section has:
+    - title: Section number and title (e.g., "1. Introduction to Topic")
+    - description: 2-3 sentence description of content
+    
+    Example format:
+    {
+      "points": [
+        {
+          "title": "1. Introduction to Azure Fundamentals",
+          "description": "Overview of Azure, its services and benefits for beginners."
+        }
+      ]
+    }
+  agent: curriculum_designer

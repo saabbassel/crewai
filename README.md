@@ -179,15 +179,10 @@ Here is an enhanced, "pro-grade" version of your prompt that you can feed into a
 * If **"rejected"**: Capture the user's feedback/instructions and restart the Outline Generation task.
 * If **"approved"**: Proceed to Task 2.
 
-
-
-
 * **Task 2: Section Expansion**
 * Iterate through each outline point.
 * Generate detailed content and a "References" section for each.
 * Save each section as an individual Markdown file (e.g., `01_introduction.md`) inside the topic folder.
-
-
 
 ### 4. Code Structure Request
 
@@ -197,6 +192,15 @@ Please generate:
 2. `crew.py` to initialize the agents and tasks.
 3. `main.py` using **CrewAI Flows** to manage the state, the HITL prompt, and the directory creation logic.
 
+* Generates structured, reviewable course outlines
+* Supports human approval before content expansion
+* Produces high-quality, reference-backed learning materials in Markdown format
+
+# example
+for the project structure use simmlar structure as in the github repo
+https://github.com/crewAIInc/crewAI-examples
+
+the generated project should saved under educational_materials
 ---
 
 ### Why this version works better:
@@ -326,8 +330,13 @@ Task 2: Generates individual Markdown files for each section (e.g., 01_introduct
 
 Usage
 Run the application with command-line arguments:
-
+python -m write_a_book_with_flows.main "Machine Learning Basics" Beginner --urls "https://example.com/ml-intro" "https://example.com/ml-concepts"
 Or using the script entry point:
-
+generate "Machine Learning Basics" Beginner --urls "https://example.com/ml-intro"
 The application creates a folder named after the topic (filesystem-safe), generates the outline for review, and upon approval, produces detailed learning material sections with proper Markdown formatting and references.
+
+
+python3 -m main.py "AZURE FUNDAMANTALS" Beginner --urls "https://learn.microsoft.com/en-us/credentials/certifications/azure-fundamentals/?practice-assessment-type=certification" "https://learn.microsoft.com/en-us/training/paths/prepare-teach-az-900-microsoft-academic-programs/" 
+
+/Users/b.saab/repos/.venv/bin/python -u -m src.educational_materials.main "AZURE FUNDAMENTALS" Beginner --urls "https://learn.microsoft.com/"
 

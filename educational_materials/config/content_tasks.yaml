@@ -1,0 +1,26 @@
+write_section:
+  description: >
+    Write comprehensive educational content for the section titled "{section_title}".
+    
+    Section Description: {section_description}
+    Topic: {topic}
+    Difficulty Level: {level}
+    
+    Your content should:
+    1. Provide a clear, detailed explanation appropriate for {level} learners
+    2. Include definitions, key concepts, and important facts
+    3. Use examples, case studies, or real-world applications
+    4. Organize information logically with clear headings
+    5. Include a "References" section citing all sources used (URLs or publications)
+    
+    Format the output as well-structured Markdown with proper headings (##, ###).
+    Ensure technical accuracy and clarity at the {level} level.
+  expected_output: >
+    A comprehensive Markdown-formatted section containing:
+    - Clear section title
+    - Well-structured content with proper headings
+    - Definitions, concepts, and important facts
+    - Examples and real-world applications
+    - References section with citations and URLs
+    - Total content: 800-1200 words minimum
+  agent: content_writer

@@ -1,0 +1,20 @@
+research_topic:
+  description: >
+    Research the topic {topic} using the provided urls {urls} if any, and gather information suitable for {level} difficulty level. Focus on high-authority sources and ensure the content is accurate and up-to-date.
+  expected_output: >
+    A comprehensive summary of key points, concepts, and references relevant to the topic at the specified level.
+  agent: researcher
+
+design_curriculum:
+  description: >
+    Based on the research summary, create a logical 3-10 point outline for the learning material. Each point should have a title and brief description, structured progressively for {level} learners.
+  expected_output: >
+    A list of 3-10 outline points, each with title and description, forming a coherent curriculum.
+  agent: curriculum_designer
+
+write_section:
+  description: >
+    Write detailed, comprehensive content for the section titled {section_title} with description {section_description}. Use Markdown formatting, include examples appropriate for {level} level, and end with a References section citing sources.
+  expected_output: >
+    A complete Markdown-formatted section of the learning material, approximately 1000-2000 words, with citations.
+  agent: content_writer
