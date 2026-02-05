@@ -123,11 +123,31 @@ class Config:
 # ====================================
 
 class LLMConfig:
-    """LLM configuration for CrewAI agents."""
+    """LLM configuration for CrewAI agents.
+    
+    Temperature settings per stage:
+    - Stage 1 (Discovery): 0.7 - Analytical with some creativity
+    - Stage 2 (Curriculum): 0.6 - Structured, focused design
+    - Stage 3 (Content): 0.8 - Creative, varied writing styles
+    - Stage 4 (Assessment): 0.7 - Rigorous, varied assessment types
+    - Stage 5 (QA): 0.5 - Conservative, focused review
+    
+    All stages use Ollama with configurable base URL and timeout.
+    """
     
     @staticmethod
-    def get_llm_config(model: str, base_url: str = None):
-        """Get LLM configuration for CrewAI."""
+    def get_llm_config(model: str, base_url: str = None, temperature: float = 0.7, top_p: float = 0.9):
+        """Get LLM configuration for CrewAI.
+        
+        Args:
+            model: Model name (e.g., "llama2:13b-chat")
+            base_url: Ollama base URL (uses Config.OLLAMA_BASE_URL if None)
+            temperature: Temperature for generation (0.0-1.0)
+            top_p: Top-p sampling parameter (0.0-1.0)
+            
+        Returns:
+            LLM instance configured for CrewAI
+        """
         from crewai import LLM
         
         if base_url is None:
@@ -136,34 +156,75 @@ class LLMConfig:
         return LLM(
             model=f"ollama/{model}",
             base_url=base_url,
+            temperature=temperature,
+            top_p=top_p,
+            timeout=Config.OLLAMA_TIMEOUT,
+        )
+    
+    @staticmethod
+    def get_discovery_llm():
+        """Get LLM for Stage 1: Discovery & Benchmarking.
+        
+        Temperature: 0.7 (analytical with creativity for gap analysis)
+        Focus: Research, analysis, trend identification
+        """
+        return LLMConfig.get_llm_config(
+            Config.DISCOVERY_MODEL,
             temperature=0.7,
             top_p=0.9,
         )
     
     @staticmethod
-    def get_discovery_llm():
-        """Get LLM for Stage 1."""
-        return LLMConfig.get_llm_config(Config.DISCOVERY_MODEL)
-    
-    @staticmethod
     def get_curriculum_llm():
-        """Get LLM for Stage 2."""
-        return LLMConfig.get_llm_config(Config.CURRICULUM_MODEL)
+        """Get LLM for Stage 2: Curriculum Architecture.
+        
+        Temperature: 0.6 (focused, structured curriculum design)
+        Focus: Learning objectives, module sequencing, Bloom's alignment
+        """
+        return LLMConfig.get_llm_config(
+            Config.CURRICULUM_MODEL,
+            temperature=0.6,
+            top_p=0.85,
+        )
     
     @staticmethod
     def get_content_llm():
-        """Get LLM for Stage 3."""
-        return LLMConfig.get_llm_config(Config.CONTENT_MODEL)
+        """Get LLM for Stage 3: Content Production.
+        
+        Temperature: 0.8 (creative for varied writing styles)
+        Focus: Lesson writing, examples, analogies, engaging content
+        """
+        return LLMConfig.get_llm_config(
+            Config.CONTENT_MODEL,
+            temperature=0.8,
+            top_p=0.95,
+        )
     
     @staticmethod
     def get_assessment_llm():
-        """Get LLM for Stage 4."""
-        return LLMConfig.get_llm_config(Config.ASSESSMENT_MODEL)
+        """Get LLM for Stage 4: Assessment & Hands-On.
+        
+        Temperature: 0.7 (balanced rigor and variety)
+        Focus: Exercises, quizzes, rubrics, project specs
+        """
+        return LLMConfig.get_llm_config(
+            Config.ASSESSMENT_MODEL,
+            temperature=0.7,
+            top_p=0.9,
+        )
     
     @staticmethod
     def get_qa_llm():
-        """Get LLM for Stage 5."""
-        return LLMConfig.get_llm_config(Config.QA_MODEL)
+        """Get LLM for Stage 5: QA Review.
+        
+        Temperature: 0.5 (conservative, rigorous review)
+        Focus: Quality checking, consistency, accessibility verification
+        """
+        return LLMConfig.get_llm_config(
+            Config.QA_MODEL,
+            temperature=0.5,
+            top_p=0.8,
+        )
 
 
 if __name__ == "__main__":

@@ -1,0 +1,30 @@
+# Stage 1: Discovery & Benchmarking Tasks
+
+tasks:
+  - id: research_courses_task
+    agent_id: course_researcher
+    description: Research and analyze popular courses on {topic} from major platforms
+    expected_output: Comprehensive analysis of existing courses including structure, modules, duration, and pedagogical approaches
+    tools: []
+    
+  - id: analyze_trends_task
+    agent_id: trends_analyst
+    description: Identify skills trends and gaps in the {topic} market
+    expected_output: Skills gap analysis, market trends report, emerging technologies, and certification requirements
+    tools: []
+    
+  - id: build_personas_task
+    agent_id: persona_builder
+    description: Create detailed learner personas for {topic}
+    expected_output: 2-5 learner personas with experience levels, goals, constraints, and learning preferences
+    tools: []
+
+output:
+  name: ResearchDossier
+  format: json
+  schema: discovery_schema.json
+  validation:
+    - schema
+    - markdown_lint
+    - terminology
+    - accessibility

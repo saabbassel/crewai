@@ -1,0 +1,30 @@
+# Stage 4: Assessment & Hands-On Tasks
+
+tasks:
+  - id: design_exercises_task
+    agent_id: exercise_designer
+    description: Create scaffolded hands-on exercises for {topic} modules
+    expected_output: Exercises progressing from guided to open-ended with clear success criteria, hints, solutions, and estimated times
+    tools: []
+    
+  - id: build_assessments_task
+    agent_id: assessment_builder
+    description: Create quizzes, rubrics, and assessments for {topic}
+    expected_output: Quiz items at multiple Bloom's levels, scoring rubrics, answer keys with explanations, and self-assessment tools
+    tools: []
+
+output:
+  name: Assessment
+  format: json
+  schema: assessment_schema.json
+  includes:
+    - exercises
+    - quizzes
+    - projects
+    - rubrics
+    - answer_keys
+  validation:
+    - schema
+    - blooms_alignment
+    - clarity
+    - accessibility

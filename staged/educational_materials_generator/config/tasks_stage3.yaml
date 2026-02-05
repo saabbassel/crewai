@@ -1,0 +1,28 @@
+# Stage 3: Content Production Tasks
+
+tasks:
+  - id: write_lessons_task
+    agent_id: lesson_author
+    description: Write clear, well-structured lessons for each {topic} module
+    expected_output: Markdown lessons with explanations, analogies, step-by-step breakdowns, worked examples, and comprehension checks
+    tools: []
+    
+  - id: generate_examples_task
+    agent_id: example_generator
+    description: Create worked examples and real-world scenarios for {topic} concepts
+    expected_output: Diverse examples from simple to complex, common mistakes, edge cases, and multiple representations
+    tools: []
+
+output:
+  name: ContentMaterial
+  format: markdown
+  schema: content_schema.json
+  variants:
+    - academic
+    - conversational
+    - corporate
+  validation:
+    - schema
+    - markdown_lint
+    - clarity
+    - accessibility

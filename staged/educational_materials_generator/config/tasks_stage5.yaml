@@ -1,0 +1,28 @@
+# Stage 5: QA & Review Tasks
+
+tasks:
+  - id: pedagogical_review_task
+    agent_id: pedagogical_reviewer
+    description: Review {topic} materials for pedagogical alignment and quality
+    expected_output: Detailed report on objective clarity, alignment, cognitive load, prerequisites, Bloom's alignment, and pedagogical soundness with recommendations
+    tools: []
+    
+  - id: clarity_check_task
+    agent_id: clarity_checker
+    description: Check {topic} materials for clarity, accessibility, and bias
+    expected_output: Readability analysis, bias detection report, WCAG 2.1 AA compliance audit, and plain language review with recommendations
+    tools: []
+
+output:
+  name: QAReport
+  format: json
+  schema: qa_schema.json
+  includes:
+    - issues_found
+    - recommendations
+    - quality_scores
+    - compliance_status
+  validation:
+    - schema
+    - completeness
+    - clarity

@@ -1,0 +1,24 @@
+# Stage 2: Curriculum Architecture Tasks
+
+tasks:
+  - id: design_curriculum_task
+    agent_id: curriculum_designer
+    description: Design a well-sequenced curriculum for {topic} with Bloom's alignment
+    expected_output: Curriculum blueprint with modules, learning objectives at each Bloom's level, prerequisite chains, and time allocations
+    tools: []
+    
+  - id: map_instruction_task
+    agent_id: instructional_designer
+    description: Map instructional strategies to learning objectives for {topic}
+    expected_output: Detailed instructional strategy including methods, practice opportunities, formative assessments, and differentiation plans
+    tools: []
+
+output:
+  name: CurriculumBlueprint
+  format: json
+  schema: curriculum_schema.json
+  validation:
+    - schema
+    - blooms_alignment
+    - prerequisites
+    - accessibility
