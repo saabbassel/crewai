@@ -25,10 +25,10 @@ def main():
     stages = [int(s) for s in args.stages.split(",")]
     ensure_dir(args.output)
 
-    print(f"Starting pipeline for {manifest.get('topic')} (stages: {stages})")
+    print(f"📚 Starting pipeline for {manifest.get('topic')} (stages: {stages})")
     results = run_pipeline(manifest, stages, args.output)
 
-    print("Pipeline finished. Stage outputs written to:")
+    print("✅ Pipeline finished. Stage outputs written to:")
     for st, out in results.items():
         print(f" - Stage {st}: output file in {args.output}")
 

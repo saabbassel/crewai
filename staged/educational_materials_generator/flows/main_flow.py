@@ -4,6 +4,7 @@ This module orchestrates the execution of crews across 5 stages with
 actual task execution via CrewAI.
 """
 from typing import Dict, Any, List
+import json
 from datetime import datetime
 import traceback
 
@@ -59,7 +60,37 @@ def run_stage(stage: int, manifest: Dict[str, Any], output_dir: str) -> Dict[str
             research_dossier = {"summary": "Stage 1 research (placeholder in this run)"}
             crew_output = run_curriculum_crew(topic, research_dossier)
             stage_result["crew_output"] = crew_output
-            stage_result["status"] = "completed"
+            # If task expects strict JSON, attempt to parse the LLM output into JSON
+            try:
+                import json
+                # crew_output may be dict with {'status':..., 'output': str}
+                output_val = crew_output.get('output') if isinstance(crew_output, dict) else None
+                if isinstance(output_val, str):
+                    # Try direct parse
+                    try:
+                        parsed = json.loads(output_val)
+                        stage_result['crew_output']['output'] = parsed
+                    except Exception:
+                        # Try to extract first JSON array substring
+                        s = output_val
+                        start = s.find('[')
+                        end = s.rfind(']')
+                        if start != -1 and end != -1 and end > start:
+                            sub = s[start:end+1]
+                            try:
+                                parsed = json.loads(sub)
+                                stage_result['crew_output']['output'] = parsed
+                            except Exception:
+                                stage_result['error'] = 'Stage 2: unable to parse JSON output from agent.'
+                                stage_result['status'] = 'warning'
+                        else:
+                            stage_result['error'] = 'Stage 2: no JSON array found in agent output.'
+                            stage_result['status'] = 'warning'
+                else:
+                    stage_result['status'] = 'completed'
+            except Exception as e:
+                stage_result['error'] = f'Post-processing error: {e}'
+                stage_result['status'] = 'warning'
             
         elif stage == 3:
             curriculum = {"summary": "Stage 2 curriculum (placeholder in this run)"}
@@ -103,8 +134,11 @@ def run_stage(stage: int, manifest: Dict[str, Any], output_dir: str) -> Dict[str
     if stage_result.get("crew_output"):
         md_lines.append("")
         md_lines.append("## Crew Output")
-        md_lines.append("```")
-        md_lines.append(str(stage_result["crew_output"])[:1000])
+        md_lines.append("```json")
+        try:
+            md_lines.append(json.dumps(stage_result["crew_output"], indent=2, ensure_ascii=False))
+        except Exception:
+            md_lines.append(str(stage_result["crew_output"]))
         md_lines.append("```")
     
     if stage_result.get("error"):

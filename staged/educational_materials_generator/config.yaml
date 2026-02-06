@@ -1,0 +1,23 @@
+# Pipeline configuration (YAML)
+output_dir: ./output
+archive_outputs: true
+log_level: INFO
+
+models:
+  discovery: llama2:13b
+  curriculum: llama2:13b
+  content: llama2:13b
+  assessment: llama2:13b
+  qa: llama2:13b
+
+hitl:
+  enable: true
+  after_discovery: true
+  after_curriculum: true
+  after_content: false
+  approval_timeout: 300
+
+standardization:
+  enforce: true
+  validate_schema: true
+  check_accessibility: true

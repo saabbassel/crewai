@@ -16,44 +16,34 @@ def create_assessment_crew(topic: str, curriculum: dict):
     
     exercise_task = Task(
         description=f"""
-        Design exercises for '{topic}':
+        Design hands-on exercises for '{topic}' modules.
         
-        Curriculum: {curriculum.get('summary', 'N/A')}
+        Create 3-5 exercises with:
+        1. Exercise title and difficulty level (Beginner/Intermediate/Advanced)
+        2. Clear instructions (50-100 words)
+        3. Success criteria (2-3 bullet points)
+        4. Estimated duration
+        5. Tools/resources needed
         
-        Create per module:
-        1. Guided practice exercises
-        2. Open-ended challenges
-        3. Progressive difficulty levels
-        4. Clear success criteria
-        5. Step-by-step hints
-        6. Common mistakes and fixes
-        7. Real-world connections
-        
-        {assess_prompt}
-        
-        Return JSON exercises with solutions.
+        Return as JSON array of exercises.
         """,
         agent=exercise_designer,
-        expected_output="JSON exercises per module with solutions, hints, rubrics"
+        expected_output="JSON array of exercises with instructions, criteria, duration",
     )
     
     assessment_task = Task(
         description=f"""
-        Create assessments for '{topic}':
+        Create quizzes and rubrics for '{topic}'.
         
-        Per module, create:
-        1. Quiz items at multiple Bloom's levels
-        2. Self-assessment checklists
-        3. Rubrics for projects
-        4. Answer keys with explanations
-        5. Difficulty ratings
+        Design:
+        1. Quiz with 5-10 multiple choice questions
+        2. Exercise rubric with 4-point scale (Novice to Advanced)
+        3. Self-assessment checklist (3-5 items)
         
-        {assess_prompt}
-        
-        Return JSON assessments file.
+        Return as structured JSON.
         """,
         agent=assessment_builder,
-        expected_output="JSON quizzes, rubrics, self-assessment tools"
+        expected_output="JSON with quizzes, rubrics, self-assessment",
     )
     
     crew = Crew(
@@ -72,14 +62,20 @@ def run_assessment_crew(topic: str, curriculum: dict):
         result = crew.kickoff()
         return {"status": "completed", "output": str(result)}
     except Exception as e:
+        import traceback
+        print(f"❌ Stage 4 Assessment Crew Error: {str(e)}")
+        print(f"Traceback: {traceback.format_exc()}")
+        
         if "not found" in str(e).lower() or "connection" in str(e).lower():
-            print(f"⚠️  Using demo mode for Stage 4")
-            return {
-                "status": "demo",
-                "output": {
-                    "exercises": ["EX-001_basics", "EX-002_intermediate", "EX-003_advanced"],
-                    "quizzes": [{"id": "QUIZ-01", "questions": 20}, {"id": "QUIZ-02", "questions": 15}],
-                    "projects": [{"title": "Capstone Project", "duration_hours": 10}]
-                }
+            print(f"⚠️  Using demo mode for Stage 4 (model unavailable)")
+        else:
+            print(f"⚠️  Using demo mode for Stage 4 (crew execution failed)")
+            
+        return {
+            "status": "demo",
+            "output": {
+                "exercises": ["EX-001_basics", "EX-002_intermediate", "EX-003_advanced"],
+                "quizzes": [{"id": "QUIZ-01", "questions": 20}, {"id": "QUIZ-02", "questions": 15}],
+                "projects": [{"title": "Capstone Project", "duration_hours": 10}]
             }
-        raise
+        }

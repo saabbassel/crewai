@@ -1,0 +1,48 @@
+{
+  "stage": 1,
+  "topic": "Azure Fundamentals",
+  "course_id": "azure_fundamentals",
+  "started_at": "2026-02-06T11:36:57.194867Z",
+  "finished_at": "2026-02-06T11:38:57.349980Z",
+  "status": "completed",
+  "crew_output": {
+    "status": "demo",
+    "output": {
+      "courses_analyzed": [
+        {
+          "platform": "Microsoft Learn",
+          "title": "Azure Fundamentals Learning Path",
+          "modules": 10,
+          "duration_hours": 50,
+          "rating": 4.8
+        },
+        {
+          "platform": "Coursera",
+          "title": "Introduction to Azure Fundamentals",
+          "modules": 8,
+          "duration_hours": 40,
+          "rating": 4.7
+        }
+      ],
+      "skill_gaps": [
+        "Cloud architecture design",
+        "Cost optimization",
+        "Security best practices",
+        "DevOps integration"
+      ],
+      "personas": [
+        {
+          "name": "IT Professional",
+          "experience": "Intermediate",
+          "goal": "Cloud migration"
+        },
+        {
+          "name": "Developer",
+          "experience": "Beginner",
+          "goal": "Cloud-native apps"
+        }
+      ]
+    }
+  },
+  "error": null
+}

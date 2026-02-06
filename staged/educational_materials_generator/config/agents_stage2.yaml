@@ -8,7 +8,7 @@ stage_description: Design pedagogically sound curriculum structure with Bloom's 
 llm_config:
   temperature: 0.6
   top_p: 0.85
-  timeout: 120
+  timeout: 300
 
 agents:
   - id: curriculum_designer

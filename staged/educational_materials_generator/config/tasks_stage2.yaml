@@ -6,12 +6,21 @@ tasks:
     description: Design a well-sequenced curriculum for {topic} with Bloom's alignment
     expected_output: Curriculum blueprint with modules, learning objectives at each Bloom's level, prerequisite chains, and time allocations
     tools: []
+    strict_json: true
+    min_modules: 8
+    max_modules: 12
+    output_instructions: |
+      Produce ONLY a valid JSON array of modules (no explanatory text). Each module must include the fields: id, title, duration_hours, learning_objectives, prerequisites, teaching_methods, practice_activities, assessment_type, estimated_time_hours.
+    batch_size: 2
     
   - id: map_instruction_task
     agent_id: instructional_designer
     description: Map instructional strategies to learning objectives for {topic}
     expected_output: Detailed instructional strategy including methods, practice opportunities, formative assessments, and differentiation plans
     tools: []
+    strict_json: false
+    output_instructions: |
+      Provide a JSON object mapping module ids to instructional strategies. Each entry should include teaching_methods, practice_activities, assessment_type, and estimated_time_hours.
 
 output:
   name: CurriculumBlueprint

@@ -1,122 +1,94 @@
-"""Configuration management for educational materials generator."""
+"""Configuration management for educational materials generator.
+
+This module loads configuration from `config.yaml` when present, and falls
+back to environment variables.
+"""
 
 import os
+from pathlib import Path
+from typing import Any, Dict
+
+try:
+    import yaml
+except Exception:
+    yaml = None
+
 from dotenv import load_dotenv
-from typing import Optional
+try:
+    from src.config_loader import ConfigLoader
+except Exception:
+    ConfigLoader = None
 
 # Load environment variables
 load_dotenv()
 
 
+def _load_yaml_config() -> Dict[str, Any]:
+    """Load config.yaml from workspace root if available."""
+    # Walk up from this file to find config.yaml
+    p = Path(__file__).resolve()
+    for parent in list(p.parents)[:6]:
+        candidate = parent / "config.yaml"
+        if candidate.exists():
+            if yaml:
+                with open(candidate, "r") as fh:
+                    return yaml.safe_load(fh) or {}
+            else:
+                # minimal parser: very limited, prefer installing pyyaml
+                return {}
+    return {}
+
+
 class Config:
-    """Central configuration manager."""
-    
-    # ====================================
-    # Ollama Configuration
-    # ====================================
-    OLLAMA_BASE_URL: str = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
-    OLLAMA_TIMEOUT: int = int(os.getenv("OLLAMA_TIMEOUT", "120"))
-    
-    # ====================================
-    # Model Selection by Stage
-    # ====================================
-    DISCOVERY_MODEL: str = os.getenv("DISCOVERY_MODEL", "llama2:13b")
-    CURRICULUM_MODEL: str = os.getenv("CURRICULUM_MODEL", "llama2:13b")
-    CONTENT_MODEL: str = os.getenv("CONTENT_MODEL", "llama2:13b")
-    ASSESSMENT_MODEL: str = os.getenv("ASSESSMENT_MODEL", "llama2:13b")
-    QA_MODEL: str = os.getenv("QA_MODEL", "llama2:13b")
-    
-    # ====================================
-    # Output Configuration
-    # ====================================
-    OUTPUT_DIR: str = os.getenv("OUTPUT_DIR", "./output")
-    ARCHIVE_OUTPUTS: bool = os.getenv("ARCHIVE_OUTPUTS", "true").lower() == "true"
-    LOG_LEVEL: str = os.getenv("LOG_LEVEL", "INFO")
-    
-    # ====================================
-    # HITL Configuration
-    # ====================================
-    # Disable HITL by default for unattended pipeline runs; can be enabled via env var
-    ENABLE_HITL: bool = os.getenv("ENABLE_HITL", "false").lower() == "true"
-    HITL_AFTER_DISCOVERY: bool = os.getenv("HITL_AFTER_DISCOVERY", "false").lower() == "true"
-    HITL_AFTER_CURRICULUM: bool = os.getenv("HITL_AFTER_CURRICULUM", "false").lower() == "true"
-    HITL_AFTER_CONTENT: bool = os.getenv("HITL_AFTER_CONTENT", "false").lower() == "true"
-    APPROVAL_TIMEOUT: int = int(os.getenv("APPROVAL_TIMEOUT", "300"))
-    
-    # ====================================
-    # Standardization Configuration
-    # ====================================
-    ENFORCE_STANDARDS: bool = os.getenv("ENFORCE_STANDARDS", "true").lower() == "true"
-    VALIDATE_SCHEMA: bool = os.getenv("VALIDATE_SCHEMA", "true").lower() == "true"
-    CHECK_ACCESSIBILITY: bool = os.getenv("CHECK_ACCESSIBILITY", "true").lower() == "true"
-    GRADE_LEVEL_TARGET: int = int(os.getenv("GRADE_LEVEL_TARGET", "9"))
-    
-    # ====================================
-    # Performance Configuration
-    # ====================================
-    PARALLEL_CONTENT_GENERATION: bool = os.getenv("PARALLEL_CONTENT_GENERATION", "true").lower() == "true"
+    """Central configuration manager.
+
+    Attributes are loaded from `config.yaml` when present, otherwise from
+    environment variables.
+    """
+
+    _yaml = _load_yaml_config()
+
+    # Ollama
+    OLLAMA_BASE_URL: str = os.getenv("OLLAMA_BASE_URL", _yaml.get("ollama_base_url", "http://localhost:11434"))
+    OLLAMA_TIMEOUT: int = int(os.getenv("OLLAMA_TIMEOUT", str(_yaml.get("ollama_timeout", 120))))
+
+    # Models (yaml under `models:` or env vars)
+    DISCOVERY_MODEL: str = os.getenv("DISCOVERY_MODEL", _yaml.get("models", {}).get("discovery", "llama2:13b"))
+    CURRICULUM_MODEL: str = os.getenv("CURRICULUM_MODEL", _yaml.get("models", {}).get("curriculum", "llama2:13b"))
+    CONTENT_MODEL: str = os.getenv("CONTENT_MODEL", _yaml.get("models", {}).get("content", "llama2:13b"))
+    ASSESSMENT_MODEL: str = os.getenv("ASSESSMENT_MODEL", _yaml.get("models", {}).get("assessment", "llama2:13b"))
+    QA_MODEL: str = os.getenv("QA_MODEL", _yaml.get("models", {}).get("qa", "llama2:13b"))
+
+    # Output
+    OUTPUT_DIR: str = os.getenv("OUTPUT_DIR", _yaml.get("output_dir", "./output"))
+    ARCHIVE_OUTPUTS: bool = (os.getenv("ARCHIVE_OUTPUTS") or str(_yaml.get("archive_outputs", True))).lower() == "true"
+    LOG_LEVEL: str = os.getenv("LOG_LEVEL", _yaml.get("log_level", "INFO"))
+
+    # HITL
+    ENABLE_HITL: bool = (os.getenv("ENABLE_HITL") or str(_yaml.get("hitl", {}).get("enable", True))).lower() == "true"
+    HITL_AFTER_DISCOVERY: bool = (os.getenv("HITL_AFTER_DISCOVERY") or str(_yaml.get("hitl", {}).get("after_discovery", True))).lower() == "true"
+    HITL_AFTER_CURRICULUM: bool = (os.getenv("HITL_AFTER_CURRICULUM") or str(_yaml.get("hitl", {}).get("after_curriculum", True))).lower() == "true"
+    HITL_AFTER_CONTENT: bool = (os.getenv("HITL_AFTER_CONTENT") or str(_yaml.get("hitl", {}).get("after_content", False))).lower() == "true"
+    APPROVAL_TIMEOUT: int = int(os.getenv("APPROVAL_TIMEOUT", str(_yaml.get("hitl", {}).get("approval_timeout", 300))))
+
+    # Standardization
+    ENFORCE_STANDARDS: bool = (os.getenv("ENFORCE_STANDARDS") or str(_yaml.get("standardization", {}).get("enforce", True))).lower() == "true"
+    VALIDATE_SCHEMA: bool = (os.getenv("VALIDATE_SCHEMA") or str(_yaml.get("standardization", {}).get("validate_schema", True))).lower() == "true"
+    CHECK_ACCESSIBILITY: bool = (os.getenv("CHECK_ACCESSIBILITY") or str(_yaml.get("standardization", {}).get("check_accessibility", True))).lower() == "true"
+
+    # Performance
+    PARALLEL_CONTENT_GENERATION: bool = (os.getenv("PARALLEL_CONTENT_GENERATION") or "true").lower() == "true"
     MAX_WORKERS: int = int(os.getenv("MAX_WORKERS", "4"))
-    CACHE_RESPONSES: bool = os.getenv("CACHE_RESPONSES", "true").lower() == "true"
-    
-    # ====================================
-    # Feature Flags
-    # ====================================
-    ENABLE_LEARNING_VARIANTS: bool = os.getenv("ENABLE_LEARNING_VARIANTS", "true").lower() == "true"
-    GENERATE_FAILED_EXAMPLES: bool = os.getenv("GENERATE_FAILED_EXAMPLES", "true").lower() == "true"
-    INCLUDE_QA_STAGE: bool = os.getenv("INCLUDE_QA_STAGE", "true").lower() == "true"
-    
-    # ====================================
-    # Model Presets
-    # ====================================
-    
+    CACHE_RESPONSES: bool = (os.getenv("CACHE_RESPONSES") or "true").lower() == "true"
+
+    # Feature flags
+    ENABLE_LEARNING_VARIANTS: bool = (os.getenv("ENABLE_LEARNING_VARIANTS") or "true").lower() == "true"
+    GENERATE_FAILED_EXAMPLES: bool = (os.getenv("GENERATE_FAILED_EXAMPLES") or "true").lower() == "true"
+    INCLUDE_QA_STAGE: bool = (os.getenv("INCLUDE_QA_STAGE") or "true").lower() == "true"
+
     @staticmethod
-    def get_lean_preset():
-        """Configure for lean mode (fastest, lowest quality)."""
-        return {
-            "DISCOVERY_MODEL": "mistral:7b-instruct",
-            "CURRICULUM_MODEL": "mistral:7b-instruct",
-            "CONTENT_MODEL": "mistral:7b-instruct",
-            "ASSESSMENT_MODEL": "mistral:7b-instruct",
-            "QA_MODEL": "mistral:7b-instruct",
-        }
-    
-    @staticmethod
-    def get_standard_preset():
-        """Configure for standard mode (recommended)."""
-        return {
-            "DISCOVERY_MODEL": "llama2:13b",
-            "CURRICULUM_MODEL": "llama2:13b",
-            "CONTENT_MODEL": "llama2:13b",
-            "ASSESSMENT_MODEL": "llama2:13b",
-            "QA_MODEL": "llama2:13b",
-        }
-    
-    @staticmethod
-    def get_pro_preset():
-        """Configure for pro mode (best quality, high resource usage)."""
-        return {
-            "DISCOVERY_MODEL": "llama2:13b",
-            "CURRICULUM_MODEL": "mistral:latest",
-            "CONTENT_MODEL": "mistral:latest",
-            "ASSESSMENT_MODEL": "llama2:13b",
-            "QA_MODEL": "mistral:latest",
-        }
-    
-    @staticmethod
-    def apply_preset(preset_name: str):
-        """Apply a model preset."""
-        presets = {
-            "lean": Config.get_lean_preset(),
-            "standard": Config.get_standard_preset(),
-            "pro": Config.get_pro_preset(),
-        }
-        
-        if preset_name not in presets:
-            raise ValueError(f"Unknown preset: {preset_name}")
-        
-        preset = presets[preset_name]
-        for key, value in preset.items():
-            setattr(Config, key, value)
+    def load_yaml():
+        return Config._yaml
 
 
 # ====================================
@@ -182,6 +154,17 @@ class LLMConfig:
         Temperature: 0.6 (focused, structured curriculum design)
         Focus: Learning objectives, module sequencing, Bloom's alignment
         """
+        # allow per-stage overrides from YAML (config/agents_stage2.yaml)
+        if ConfigLoader:
+            cfg = ConfigLoader.get_llm_config_for_stage(2) or {}
+            temp = cfg.get('temperature', 0.6)
+            top_p = cfg.get('top_p', 0.85)
+            timeout = cfg.get('timeout', Config.OLLAMA_TIMEOUT)
+            return LLMConfig.get_llm_config(
+                Config.CURRICULUM_MODEL,
+                temperature=temp,
+                top_p=top_p,
+            )
         return LLMConfig.get_llm_config(
             Config.CURRICULUM_MODEL,
             temperature=0.6,

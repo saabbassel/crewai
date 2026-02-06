@@ -1,0 +1,13 @@
+{
+  "stage": 3,
+  "topic": "Azure Fundamentals",
+  "course_id": "azure_fundamentals",
+  "started_at": "2026-02-06T11:02:28.301420Z",
+  "finished_at": "2026-02-06T11:04:47.000664Z",
+  "status": "completed",
+  "crew_output": {
+    "status": "completed",
+    "output": "Here is an example of worked solutions, real-world scenarios, common mistakes, edge cases, and boundary conditions for the topic of \"Azure Fundamentals\":\n\n1. Worked Examples (Step-by-Step Solutions):\na. Creating a virtual machine using Azure Virtual Machines.\nb. Deploying a container using Azure Container Instances.\nc. Storing data using Azure Blob Storage.\nd. Building a web application using Azure App Service.\n2. Real-World Scenarios:\na. A small business uses Azure Virtual Machines to host their website and applications.\nb. A large enterprise uses Azure Container Instances to deploy and manage containerized applications.\nc. A cloud-based startup uses Azure Blob Storage to store and retrieve large amounts of data.\nd. A financial institution uses Azure App Service to build and deploy a web application for their customers.\n3. Common Mistakes and How to Fix Them:\na. Not securing virtual machines and databases with proper access controls and encryption.\nb. Overprovisioning resources, leading to increased costs and inefficient resource usage.\nc. Failing to monitor and log data for security and performance issues.\nd. Not using edge cases and boundary conditions to test and validate applications.\n4. Edge Cases and Boundary Conditions:\na. Testing for extreme temperatures, humidity, and other environmental factors that may impact application performance.\nb. Validating the application's behavior under low or high resource utilization scenarios.\nc. Ensuring the application can handle large amounts of data and traffic without performance degradation.\n5. Multiple Representations (Visual, Textual, Code):\na. Visual representations: diagrams, architecture designs, and user interface mockups.\nb. Textual representations: documentation, technical guides, and API reference materials.\nc. Code representations: sample code, tutorials, and GitHub repositories.\n6. Connecting Abstract Concepts to Familiar Domains:\na. Comparing Azure services to real-world analogies, such as a construction site for compute services or a filing system for storage services.\nb. Explaining complex concepts using relatable examples, such as how Azure App Service is like a manufacturing process for software applications.\nc. Providing practical use cases and real-world scenarios to illustrate the benefits and uses of Azure services."
+  },
+  "error": null
+}

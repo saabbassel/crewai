@@ -149,8 +149,14 @@ python -m src.flows.main_flow \
 # run the full pipeline again with the correct model:
 /Users/b.saab/repos/.venv/bin/python main.py --input input/azure_fundamentals.json --stages 1,2,3,4,5 --output output 2>&1 | grep -E "(Starting|Running|Stage|Pipeline|error|Error|completed|Output)"
 
+/Users/b.saab/repos/.venv/bin/python main.py --input input/azure_fundamentals.json --stages 2 --output output 2>&1 | sed -n '1,240p'
+
+
 # Debug check what models are actually available and display them:
 curl -s http://localhost:11434/api/tags | /Users/b.saab/repos/.venv/bin/python -m json.tool 2>&1 | head -50
+
+# verify all outputs were created
+cd /Users/b.saab/repos/crewai_bsaab/staged/educational_materials_generator/output && ls -lh stage_*.json stage_*.md 2>&1 | grep -E "(stage_|total)"
 ```
 
 ### Run Individual Stages
