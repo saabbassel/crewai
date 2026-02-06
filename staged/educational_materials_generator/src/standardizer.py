@@ -239,6 +239,25 @@ If any requirement is unclear, ask for clarification."""
         }
         
         return stage_prompts.get(stage, "")
+    
+    def get_stage_prompt(self, stage_name: str) -> str:
+        """Get standardization prompt for a stage by name.
+        
+        Args:
+            stage_name: Stage name (discovery, curriculum, content, assessment, qa)
+            
+        Returns:
+            Standardization prompt string
+        """
+        stage_map = {
+            "discovery": 1,
+            "curriculum": 2,
+            "content": 3,
+            "assessment": 4,
+            "qa": 5,
+        }
+        stage_num = stage_map.get(stage_name.lower(), 1)
+        return self.get_stage_standards(stage_num)
 
 
 class AccessibilityChecker:

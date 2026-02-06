@@ -1,2 +1,6 @@
 .DS_Store
 *.pyc
+staged/educational_materials_generator/src/__pycache__/*.pyc
+staged/educational_materials_generator/src/agents/__pycache__/*.pyc
+staged/educational_materials_generator/src/__pycache__/config.cpython-312.pyc
+staged/educational_materials_generator/src/agents/__pycache__/__init__.cpython-312.pyc
