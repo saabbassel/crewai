@@ -342,4 +342,12 @@ python3 -m main.py "AZURE FUNDAMANTALS" Beginner --urls "https://learn.microsoft
 
 /Users/b.saab/repos/.venv/bin/python -u -m src.educational_materials.main "AZURE FUNDAMENTALS" Beginner --urls "https://learn.microsoft.com/"
 
+# Stages
+Progress update: I created a tracked TODO plan for the Azure Fundamentals run and added the input manifest at staged/educational_materials_generator/input/azure_fundamentals.json.
+
+Next steps I can take now (pick one):
+
+Run the full pipeline (Stages 1→5) now — I will implement a simple runner to execute stages and save outputs.
+Run Stage 1 (Discovery) only and present results for HITL review.
+Create the runner scripts (main.py / flows/main_flow.py) and required utilities (src/utils/file_handler.py, src/flows/run_pipeline.py) first.
 

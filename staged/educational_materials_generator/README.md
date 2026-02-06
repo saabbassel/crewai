@@ -125,6 +125,9 @@ educational_materials_generator/
 ### Run Complete Pipeline
 
 ```bash
+# Test
+/Users/b.saab/repos/.venv/bin/python test_agents.py
+
 # create a quick visual summary of what's been scaffolded:
 cd /Users/b.saab/repos/crewai_bsaab/staged/educational_materials_generator && find . -type f -name "*.py" -o -name "*.md" -o -name "*.toml" -o -name ".env*" | head -30
 
@@ -133,6 +136,10 @@ python -m src.flows.main_flow \
     --level "Beginner" \
     --urls "https://learn.microsoft.com/azure/" \
     --output-dir ./output
+
+/Users/b.saab/repos/.venv/bin/python main.py --input input/azure_fundamentals.json --stages 1 --output output
+
+/Users/b.saab/repos/.venv/bin/python main.py --input input/azure_fundamentals.json --stages 2,3,4,5 --output output
 ```
 
 ### Run Individual Stages

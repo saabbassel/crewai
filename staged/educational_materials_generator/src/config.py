@@ -36,9 +36,10 @@ class Config:
     # ====================================
     # HITL Configuration
     # ====================================
-    ENABLE_HITL: bool = os.getenv("ENABLE_HITL", "true").lower() == "true"
-    HITL_AFTER_DISCOVERY: bool = os.getenv("HITL_AFTER_DISCOVERY", "true").lower() == "true"
-    HITL_AFTER_CURRICULUM: bool = os.getenv("HITL_AFTER_CURRICULUM", "true").lower() == "true"
+    # Disable HITL by default for unattended pipeline runs; can be enabled via env var
+    ENABLE_HITL: bool = os.getenv("ENABLE_HITL", "false").lower() == "true"
+    HITL_AFTER_DISCOVERY: bool = os.getenv("HITL_AFTER_DISCOVERY", "false").lower() == "true"
+    HITL_AFTER_CURRICULUM: bool = os.getenv("HITL_AFTER_CURRICULUM", "false").lower() == "true"
     HITL_AFTER_CONTENT: bool = os.getenv("HITL_AFTER_CONTENT", "false").lower() == "true"
     APPROVAL_TIMEOUT: int = int(os.getenv("APPROVAL_TIMEOUT", "300"))
     
