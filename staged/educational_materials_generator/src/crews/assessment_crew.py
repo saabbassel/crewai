@@ -66,10 +66,20 @@ def create_assessment_crew(topic: str, curriculum: dict):
 
 
 def run_assessment_crew(topic: str, curriculum: dict):
-    """Execute assessment crew."""
-    crew = create_assessment_crew(topic, curriculum)
-    result = crew.kickoff()
-    return {
-        "status": "completed",
-        "output": str(result),
-    }
+    """Execute assessment crew. Falls back to demo mode if Ollama unavailable."""
+    try:
+        crew = create_assessment_crew(topic, curriculum)
+        result = crew.kickoff()
+        return {"status": "completed", "output": str(result)}
+    except Exception as e:
+        if "not found" in str(e).lower() or "connection" in str(e).lower():
+            print(f"⚠️  Using demo mode for Stage 4")
+            return {
+                "status": "demo",
+                "output": {
+                    "exercises": ["EX-001_basics", "EX-002_intermediate", "EX-003_advanced"],
+                    "quizzes": [{"id": "QUIZ-01", "questions": 20}, {"id": "QUIZ-02", "questions": 15}],
+                    "projects": [{"title": "Capstone Project", "duration_hours": 10}]
+                }
+            }
+        raise

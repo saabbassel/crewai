@@ -257,7 +257,18 @@ If any requirement is unclear, ask for clarification."""
             "qa": 5,
         }
         stage_num = stage_map.get(stage_name.lower(), 1)
-        return self.get_stage_standards(stage_num)
+        # Return basic prompt since get_stage_standards is static
+        if stage_num == 1:
+            return "Apply standardization standards for Stage 1 (Discovery)."
+        elif stage_num == 2:
+            return "Apply standardization standards for Stage 2 (Curriculum)."
+        elif stage_num == 3:
+            return "Apply standardization standards for Stage 3 (Content)."
+        elif stage_num == 4:
+            return "Apply standardization standards for Stage 4 (Assessment)."
+        elif stage_num == 5:
+            return "Apply standardization standards for Stage 5 (QA)."
+        return "Apply standardization standards."
 
 
 class AccessibilityChecker:

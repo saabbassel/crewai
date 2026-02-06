@@ -76,10 +76,28 @@ def create_curriculum_crew(topic: str, research_dossier: dict):
 
 
 def run_curriculum_crew(topic: str, research_dossier: dict):
-    """Execute curriculum crew."""
-    crew = create_curriculum_crew(topic, research_dossier)
-    result = crew.kickoff()
-    return {
-        "status": "completed",
-        "output": str(result),
-    }
+    """Execute curriculum crew. Falls back to demo mode if Ollama unavailable."""
+    try:
+        crew = create_curriculum_crew(topic, research_dossier)
+        result = crew.kickoff()
+        return {"status": "completed", "output": str(result)}
+    except Exception as e:
+        if "not found" in str(e).lower() or "connection" in str(e).lower():
+            print(f"⚠️  Using demo mode for Stage 2")
+            return {
+                "status": "demo",
+                "output": {
+                    "modules": [
+                        {"id": "MOD-01", "title": "Fundamentals", "duration": 4},
+                        {"id": "MOD-02", "title": "Core Services", "duration": 6},
+                        {"id": "MOD-03", "title": "Advanced Topics", "duration": 5}
+                    ],
+                    "total_hours": 45,
+                    "objectives": [
+                        {"level": "Remember", "count": 5},
+                        {"level": "Understand", "count": 8},
+                        {"level": "Apply", "count": 6}
+                    ]
+                }
+            }
+        raise

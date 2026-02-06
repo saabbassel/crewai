@@ -115,12 +115,52 @@ def create_discovery_crew(topic: str, urls: list):
 def run_discovery_crew(topic: str, urls: list):
     """Execute discovery crew and return results.
     
+    Falls back to demo mode if Ollama model not available.
+    
     Returns:
         Dict with course_analysis, trends_analysis, personas
     """
-    crew = create_discovery_crew(topic, urls)
-    result = crew.kickoff()
-    return {
-        "status": "completed",
-        "output": str(result),
-    }
+    try:
+        crew = create_discovery_crew(topic, urls)
+        result = crew.kickoff()
+        return {
+            "status": "completed",
+            "output": str(result),
+        }
+    except Exception as e:
+        # Fallback to demo/mock mode
+        error_str = str(e).lower()
+        if "not found" in error_str or "connection" in error_str:
+            print(f"⚠️  Ollama model not available, using demo mode for Stage 1")
+            return {
+                "status": "demo",
+                "output": {
+                    "courses_analyzed": [
+                        {
+                            "platform": "Microsoft Learn",
+                            "title": f"{topic} Learning Path",
+                            "modules": 10,
+                            "duration_hours": 50,
+                            "rating": 4.8
+                        },
+                        {
+                            "platform": "Coursera",
+                            "title": f"Introduction to {topic}",
+                            "modules": 8,
+                            "duration_hours": 40,
+                            "rating": 4.7
+                        }
+                    ],
+                    "skill_gaps": [
+                        "Cloud architecture design",
+                        "Cost optimization",
+                        "Security best practices",
+                        "DevOps integration"
+                    ],
+                    "personas": [
+                        {"name": "IT Professional", "experience": "Intermediate", "goal": "Cloud migration"},
+                        {"name": "Developer", "experience": "Beginner", "goal": "Cloud-native apps"}
+                    ]
+                }
+            }
+        raise

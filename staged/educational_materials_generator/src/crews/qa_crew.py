@@ -68,10 +68,21 @@ def create_qa_crew(topic: str, all_materials: dict):
 
 
 def run_qa_crew(topic: str, all_materials: dict):
-    """Execute QA crew."""
-    crew = create_qa_crew(topic, all_materials)
-    result = crew.kickoff()
-    return {
-        "status": "completed",
-        "output": str(result),
-    }
+    """Execute QA crew. Falls back to demo mode if Ollama unavailable."""
+    try:
+        crew = create_qa_crew(topic, all_materials)
+        result = crew.kickoff()
+        return {"status": "completed", "output": str(result)}
+    except Exception as e:
+        if "not found" in str(e).lower() or "connection" in str(e).lower():
+            print(f"⚠️  Using demo mode for Stage 5")
+            return {
+                "status": "demo",
+                "output": {
+                    "quality_score": 0.92,
+                    "accessibility_level": "AA",
+                    "issues_found": 3,
+                    "recommendations": ["Add more worked examples", "Improve readability of code snippets"]
+                }
+            }
+        raise

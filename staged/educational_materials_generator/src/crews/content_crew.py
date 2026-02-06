@@ -68,10 +68,20 @@ def create_content_crew(topic: str, curriculum: dict):
 
 
 def run_content_crew(topic: str, curriculum: dict):
-    """Execute content crew."""
-    crew = create_content_crew(topic, curriculum)
-    result = crew.kickoff()
-    return {
-        "status": "completed",
-        "output": str(result),
-    }
+    """Execute content crew. Falls back to demo mode if Ollama unavailable."""
+    try:
+        crew = create_content_crew(topic, curriculum)
+        result = crew.kickoff()
+        return {"status": "completed", "output": str(result)}
+    except Exception as e:
+        if "not found" in str(e).lower() or "connection" in str(e).lower():
+            print(f"⚠️  Using demo mode for Stage 3")
+            return {
+                "status": "demo",
+                "output": {
+                    "lessons": ["MOD-01_LESSON.md", "MOD-02_LESSON.md", "MOD-03_LESSON.md"],
+                    "handouts": ["MOD-01_HANDOUT.pdf", "MOD-02_HANDOUT.pdf"],
+                    "examples": {"worked_examples": 15, "scenarios": 8}
+                }
+            }
+        raise

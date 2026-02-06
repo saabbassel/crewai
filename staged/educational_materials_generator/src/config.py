@@ -20,11 +20,11 @@ class Config:
     # ====================================
     # Model Selection by Stage
     # ====================================
-    DISCOVERY_MODEL: str = os.getenv("DISCOVERY_MODEL", "llama2:13b-chat")
-    CURRICULUM_MODEL: str = os.getenv("CURRICULUM_MODEL", "llama2:13b-chat")
-    CONTENT_MODEL: str = os.getenv("CONTENT_MODEL", "llama2:13b-chat")
-    ASSESSMENT_MODEL: str = os.getenv("ASSESSMENT_MODEL", "llama2:13b-chat")
-    QA_MODEL: str = os.getenv("QA_MODEL", "llama2:13b-chat")
+    DISCOVERY_MODEL: str = os.getenv("DISCOVERY_MODEL", "llama2:13b")
+    CURRICULUM_MODEL: str = os.getenv("CURRICULUM_MODEL", "llama2:13b")
+    CONTENT_MODEL: str = os.getenv("CONTENT_MODEL", "llama2:13b")
+    ASSESSMENT_MODEL: str = os.getenv("ASSESSMENT_MODEL", "llama2:13b")
+    QA_MODEL: str = os.getenv("QA_MODEL", "llama2:13b")
     
     # ====================================
     # Output Configuration
@@ -84,22 +84,22 @@ class Config:
     def get_standard_preset():
         """Configure for standard mode (recommended)."""
         return {
-            "DISCOVERY_MODEL": "llama2:13b-chat",
-            "CURRICULUM_MODEL": "llama2:13b-chat",
-            "CONTENT_MODEL": "llama2:13b-chat",
-            "ASSESSMENT_MODEL": "llama2:13b-chat",
-            "QA_MODEL": "llama2:13b-chat",
+            "DISCOVERY_MODEL": "llama2:13b",
+            "CURRICULUM_MODEL": "llama2:13b",
+            "CONTENT_MODEL": "llama2:13b",
+            "ASSESSMENT_MODEL": "llama2:13b",
+            "QA_MODEL": "llama2:13b",
         }
     
     @staticmethod
     def get_pro_preset():
         """Configure for pro mode (best quality, high resource usage)."""
         return {
-            "DISCOVERY_MODEL": "llama2:13b-chat",
-            "CURRICULUM_MODEL": "mixtral:8x7b",
-            "CONTENT_MODEL": "mixtral:8x7b",
-            "ASSESSMENT_MODEL": "deepseek-v3.2-speciale",
-            "QA_MODEL": "qwen:30b",
+            "DISCOVERY_MODEL": "llama2:13b",
+            "CURRICULUM_MODEL": "mistral:latest",
+            "CONTENT_MODEL": "mistral:latest",
+            "ASSESSMENT_MODEL": "llama2:13b",
+            "QA_MODEL": "mistral:latest",
         }
     
     @staticmethod
