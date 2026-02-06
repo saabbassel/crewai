@@ -1,0 +1,35 @@
+{
+  "stage": 4,
+  "topic": "Azure Fundamentals",
+  "course_id": "azure_fundamentals",
+  "started_at": "2026-02-06T10:26:59.964553Z",
+  "finished_at": "2026-02-06T10:30:33.779122Z",
+  "status": "completed",
+  "crew_output": {
+    "status": "demo",
+    "output": {
+      "exercises": [
+        "EX-001_basics",
+        "EX-002_intermediate",
+        "EX-003_advanced"
+      ],
+      "quizzes": [
+        {
+          "id": "QUIZ-01",
+          "questions": 20
+        },
+        {
+          "id": "QUIZ-02",
+          "questions": 15
+        }
+      ],
+      "projects": [
+        {
+          "title": "Capstone Project",
+          "duration_hours": 10
+        }
+      ]
+    }
+  },
+  "error": null
+}

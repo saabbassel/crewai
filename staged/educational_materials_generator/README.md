@@ -140,6 +140,17 @@ python -m src.flows.main_flow \
 /Users/b.saab/repos/.venv/bin/python main.py --input input/azure_fundamentals.json --stages 1 --output output
 
 /Users/b.saab/repos/.venv/bin/python main.py --input input/azure_fundamentals.json --stages 2,3,4,5 --output output
+
+/Users/b.saab/repos/.venv/bin/python main.py --input input/azure_fundamentals.json --stages 1,2,3,4,5 --output output 2>&1 | head -100
+
+# Demo mode
+/Users/b.saab/repos/.venv/bin/python main.py --input input/azure_fundamentals.json --stages 1,2,3,4,5 --output output 2>&1 | grep -E "(Starting|Running|demo|Pipeline|output)"
+
+# run the full pipeline again with the correct model:
+/Users/b.saab/repos/.venv/bin/python main.py --input input/azure_fundamentals.json --stages 1,2,3,4,5 --output output 2>&1 | grep -E "(Starting|Running|Stage|Pipeline|error|Error|completed|Output)"
+
+# Debug check what models are actually available and display them:
+curl -s http://localhost:11434/api/tags | /Users/b.saab/repos/.venv/bin/python -m json.tool 2>&1 | head -50
 ```
 
 ### Run Individual Stages
